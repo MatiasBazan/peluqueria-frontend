@@ -1,0 +1,56 @@
+<section id="servicios" class="section">
+  <div class="container">
+    <header class="head">
+      <span class="eyebrow">Nuestros servicios</span>
+      <h2 class="section-title">Cuidado pensado al detalle</h2>
+      <p class="section-lead">
+        Cada servicio combina técnica, productos premium y un ritual relajado para que salgas
+        renovado.
+      </p>
+    </header>
+
+    @if (cargando()) {
+      <div class="grid">
+        @for (s of skeletons; track s) {
+          <div class="card servicio skeleton">
+            <div class="sk-line w-60"></div>
+            <div class="sk-line w-90"></div>
+            <div class="sk-line w-40"></div>
+          </div>
+        }
+      </div>
+    } @else if (servicios().length === 0) {
+      <p class="vacio">Pronto publicaremos nuestra carta de servicios.</p>
+    } @else {
+      <div class="grid">
+        @for (s of servicios(); track s.id) {
+          <a class="card servicio" [routerLink]="['/reservar']" [queryParams]="{ servicio: s.id }">
+            <div class="servicio-top">
+              <h3 class="servicio-nombre">{{ s.nombre }}</h3>
+              <span class="duracion">{{ formatDuracion(s.duracionMinutos) }}</span>
+            </div>
+            @if (s.descripcion) {
+              <p class="servicio-desc">{{ s.descripcion }}</p>
+            }
+            <div class="servicio-foot">
+              <span class="precio">{{ formatPrecio(s.precio) }}</span>
+              <span class="reservar">
+                Reservar
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 12h14M13 6l6 6-6 6"
+                  />
+                </svg>
+              </span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar profesional' : 'Nuevo profesional' }}</h2>
+
+<mat-dialog-content>
+  <form class="form-dialog" [formGroup]="form">
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" />
+        @if (form.controls.nombre.hasError('required') && form.controls.nombre.touched) {
+          <mat-error>Obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="apellido" />
+        @if (form.controls.apellido.hasError('required') && form.controls.apellido.touched) {
+          <mat-error>Obligatorio.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="telefono" inputmode="tel" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>URL de la foto</mat-label>
+      <input matInput formControlName="foto" placeholder="https://…" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Servicios que ofrece</mat-label>
+      <mat-select formControlName="servicioIds" multiple>
+        @for (s of data.servicios; track s.id) {
+          <mat-option [value]="s.id">{{ s.nombre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-slide-toggle class="toggle" formControlName="activo">Profesional activo</mat-slide-toggle>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-ghost btn-sm" mat-dialog-close [disabled]="guardando()">
+    Cancelar
+  </button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="guardar()" [disabled]="guardando()">
+    @if (guardando()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Guardar
+    }
+  </button>
+</mat-dialog-actions>

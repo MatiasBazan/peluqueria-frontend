@@ -1,0 +1,66 @@
+<section id="profesionales" class="section">
+  <div class="container">
+    <header class="head">
+      <span class="eyebrow">El equipo</span>
+      <h2 class="section-title">Manos expertas, estilo propio</h2>
+      <p class="section-lead">
+        Profesionales apasionados por su oficio. Elegí con quién querés atenderte.
+      </p>
+    </header>
+
+    @if (cargando()) {
+      <div class="grid">
+        @for (s of skeletons; track s) {
+          <div class="card prof skeleton">
+            <div class="sk-foto"></div>
+            <div class="sk-line w-50"></div>
+            <div class="sk-line w-80"></div>
+          </div>
+        }
+      </div>
+    } @else if (profesionales().length === 0) {
+      <p class="vacio">Pronto te presentamos a nuestro equipo.</p>
+    } @else {
+      <div class="grid">
+        @for (p of profesionales(); track p.id) {
+          <article class="card prof">
+            <div class="foto-wrap">
+              <img
+                [src]="fotoDe(p)"
+                [alt]="'Foto de ' + p.nombre + ' ' + p.apellido"
+                loading="lazy"
+              />
+            </div>
+            <div class="prof-body">
+              <h3 class="prof-nombre">{{ p.nombre }} {{ p.apellido }}</h3>
+              @if (p.servicios.length > 0) {
+                <ul class="chips">
+                  @for (s of p.servicios; track s.id) {
+                    <li>{{ s.nombre }}</li>
+                  }
+                </ul>
+              }
+              <a
+                class="prof-cta"
+                [routerLink]="['/reservar']"
+                [queryParams]="{ profesional: p.id }"
+              >
+                Reservar con {{ p.nombre }}
+                <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 12h14M13 6l6 6-6 6"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

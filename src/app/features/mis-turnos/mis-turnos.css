@@ -1,0 +1,172 @@
+:host {
+  display: block;
+}
+
+.mis-turnos-main {
+  padding-top: calc(var(--header-h) + 48px);
+  padding-bottom: 96px;
+  min-height: 100vh;
+}
+
+.narrow {
+  max-width: 760px;
+}
+
+.page-head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.page-title {
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+}
+
+.page-lead {
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+/* --- Buscador --- */
+.buscar {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.buscar-field {
+  flex: 1;
+}
+
+.buscar .btn {
+  margin-top: 4px;
+}
+
+/* --- Estado vacío --- */
+.estado-vacio {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.estado-vacio h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.estado-vacio p {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+/* --- Lista de turnos --- */
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.turno {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 26px;
+}
+
+.turno-fecha {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 24px;
+  border-right: 1px solid var(--line);
+}
+
+.dia {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.hora {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--gold-deep);
+}
+
+.turno-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.turno-info h3 {
+  font-size: 1.15rem;
+}
+
+.turno-info p {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.turno-accion {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- Caja de cancelación --- */
+.cancelar-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.codigo-field {
+  width: 100%;
+}
+
+.cancelar-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+  .buscar {
+    flex-direction: column;
+  }
+
+  .buscar .btn {
+    width: 100%;
+  }
+
+  .turno {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .turno-fecha {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+    padding-right: 0;
+    padding-bottom: 14px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .turno-accion {
+    justify-content: stretch;
+  }
+
+  .turno-accion > .btn {
+    width: 100%;
+  }
+
+  .cancelar-box {
+    width: 100%;
+  }
+}

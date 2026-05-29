@@ -1,0 +1,297 @@
+<app-header />
+
+<main class="reservar-main">
+  <div class="container">
+    <header class="page-head">
+      <span class="eyebrow">Reservá tu turno</span>
+      <h1 class="page-title">Tu próxima visita, en cuatro pasos</h1>
+    </header>
+
+    @if (turnoConfirmado(); as turno) {
+      <!-- ===== Pantalla de éxito ===== -->
+      <section class="exito card">
+        <div class="exito-check">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M20 6 9 17l-5-5"
+            />
+          </svg>
+        </div>
+        <h2>¡Turno reservado!</h2>
+        <p class="exito-lead">
+          Te esperamos, {{ turno.clienteNombre }}. Guardá tu código de cancelación por las dudas.
+        </p>
+
+        <div class="exito-codigo">
+          <span class="cod-label">Código de cancelación</span>
+          <span class="cod-valor">{{ turno.codigoCancelacion }}</span>
+        </div>
+
+        <ul class="exito-detalle">
+          <li><span>Servicio</span><strong>{{ turno.servicioNombre }}</strong></li>
+          <li><span>Profesional</span><strong>{{ turno.profesionalNombre }}</strong></li>
+          <li>
+            <span>Fecha y hora</span>
+            <strong>{{ formatFechaLarga(turno.fechaHora) }} · {{ turno.fechaHora.slice(11, 16) }}</strong>
+          </li>
+        </ul>
+
+        <p class="exito-wsp">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 2a10 10 0 0 0-8.6 15.05L2 22l5.07-1.33A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.08-1.12l-.29-.17-3 .79.8-2.93-.19-.3A8 8 0 1 1 12 20Z"
+            />
+          </svg>
+          Recibirás la confirmación por WhatsApp al número que ingresaste.
+        </p>
+
+        <div class="exito-actions">
+          <a routerLink="/" class="btn btn-ghost">Volver al inicio</a>
+          <button type="button" class="btn btn-primary" (click)="reservarOtro()">
+            Reservar otro turno
+          </button>
+        </div>
+      </section>
+    } @else if (cargandoDatos()) {
+      <div class="cargando">
+        <mat-spinner diameter="42" />
+        <p>Cargando servicios…</p>
+      </div>
+    } @else {
+      <!-- ===== Stepper ===== -->
+      <mat-stepper
+        linear
+        [selectedIndex]="pasoInicial()"
+        [orientation]="esMobile() ? 'vertical' : 'horizontal'"
+        class="wizard"
+      >
+        <!-- Paso 1: Servicio -->
+        <mat-step [completed]="servicioSeleccionado() !== null">
+          <ng-template matStepLabel>Servicio</ng-template>
+          <h2 class="step-title">¿Qué te hacés hoy?</h2>
+
+          @if (servicios().length === 0) {
+            <p class="vacio">No hay servicios disponibles en este momento.</p>
+          } @else {
+            <div class="opciones">
+              @for (s of servicios(); track s.id) {
+                <button
+                  type="button"
+                  class="opcion"
+                  [class.activa]="servicioSeleccionado()?.id === s.id"
+                  (click)="seleccionarServicio(s)"
+                >
+                  <span class="opcion-top">
+                    <span class="opcion-nombre">{{ s.nombre }}</span>
+                    <span class="opcion-precio">{{ formatPrecio(s.precio) }}</span>
+                  </span>
+                  @if (s.descripcion) {
+                    <span class="opcion-desc">{{ s.descripcion }}</span>
+                  }
+                  <span class="opcion-meta">{{ formatDuracion(s.duracionMinutos) }}</span>
+                </button>
+              }
+            </div>
+          }
+
+          <div class="step-actions">
+            <a routerLink="/" class="btn btn-ghost">Cancelar</a>
+            <button class="btn btn-primary" matStepperNext [disabled]="!servicioSeleccionado()">
+              Continuar
+            </button>
+          </div>
+        </mat-step>
+
+        <!-- Paso 2: Profesional -->
+        <mat-step [completed]="profesionalSeleccionado() !== null">
+          <ng-template matStepLabel>Profesional</ng-template>
+          <h2 class="step-title">¿Con quién querés atenderte?</h2>
+
+          @if (profesionalesFiltrados().length === 0) {
+            <p class="vacio">No hay profesionales disponibles para este servicio.</p>
+          } @else {
+            <div class="opciones profesionales">
+              @for (p of profesionalesFiltrados(); track p.id) {
+                <button
+                  type="button"
+                  class="opcion prof"
+                  [class.activa]="profesionalSeleccionado()?.id === p.id"
+                  (click)="seleccionarProfesional(p)"
+                >
+                  <img
+                    [src]="p.foto || ('https://picsum.photos/seed/lumiere-' + p.id + '/120/120')"
+                    [alt]="p.nombre"
+                    class="prof-foto"
+                    loading="lazy"
+                  />
+                  <span class="prof-info">
+                    <span class="opcion-nombre">{{ p.nombre }} {{ p.apellido }}</span>
+                    <span class="opcion-desc">{{ p.servicios.length }} servicios</span>
+                  </span>
+                </button>
+              }
+            </div>
+          }
+
+          <div class="step-actions">
+            <button class="btn btn-ghost" matStepperPrevious>Atrás</button>
+            <button class="btn btn-primary" matStepperNext [disabled]="!profesionalSeleccionado()">
+              Continuar
+            </button>
+          </div>
+        </mat-step>
+
+        <!-- Paso 3: Fecha y hora -->
+        <mat-step [completed]="horaSeleccionada() !== null">
+          <ng-template matStepLabel>Fecha y hora</ng-template>
+          <h2 class="step-title">Elegí el día y el horario</h2>
+
+          <mat-form-field appearance="outline" class="fecha-field">
+            <mat-label>Fecha del turno</mat-label>
+            <input
+              matInput
+              readonly
+              [matDatepicker]="picker"
+              [min]="minFecha"
+              [value]="fecha()"
+              (dateChange)="onFechaChange($event)"
+              (click)="picker.open()"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="picker" />
+            <mat-datepicker #picker />
+          </mat-form-field>
+
+          <div class="slots-wrap">
+            @if (!fecha()) {
+              <p class="hint">Seleccioná una fecha para ver los horarios disponibles.</p>
+            } @else if (cargandoSlots()) {
+              <div class="slots-cargando">
+                <mat-spinner diameter="30" />
+                <span>Buscando horarios…</span>
+              </div>
+            } @else if (errorSlots()) {
+              <p class="hint">
+                No pudimos consultar la disponibilidad.
+                <button type="button" class="link-reintentar" (click)="reintentarDisponibilidad()">
+                  Reintentar
+                </button>
+              </p>
+            } @else if (slots().length === 0) {
+              <p class="hint">
+                No hay horarios disponibles ese día. Probá con otra fecha.
+              </p>
+            } @else {
+              <span class="slots-label">Horarios disponibles</span>
+              <div class="slots">
+                @for (slot of slots(); track slot) {
+                  <button
+                    type="button"
+                    class="slot"
+                    [class.activo]="horaSeleccionada() === slot"
+                    (click)="seleccionarHora(slot)"
+                  >
+                    {{ slot }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="step-actions">
+            <button class="btn btn-ghost" matStepperPrevious>Atrás</button>
+            <button class="btn btn-primary" matStepperNext [disabled]="!horaSeleccionada()">
+              Continuar
+            </button>
+          </div>
+        </mat-step>
+
+        <!-- Paso 4: Datos + resumen -->
+        <mat-step [stepControl]="datosForm">
+          <ng-template matStepLabel>Tus datos</ng-template>
+          <h2 class="step-title">Últimos detalles</h2>
+
+          <div class="datos-grid">
+            <form class="datos-form" [formGroup]="datosForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre y apellido</mat-label>
+                <input matInput formControlName="nombre" autocomplete="name" />
+                @if (datosForm.controls.nombre.hasError('required') && datosForm.controls.nombre.touched) {
+                  <mat-error>Ingresá tu nombre.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Teléfono (WhatsApp)</mat-label>
+                <input matInput formControlName="telefono" autocomplete="tel" inputmode="tel" />
+                @if (datosForm.controls.telefono.hasError('required') && datosForm.controls.telefono.touched) {
+                  <mat-error>Ingresá un teléfono de contacto.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email (opcional)</mat-label>
+                <input matInput formControlName="email" autocomplete="email" inputmode="email" />
+                @if (datosForm.controls.email.hasError('email')) {
+                  <mat-error>El email no tiene un formato válido.</mat-error>
+                }
+              </mat-form-field>
+            </form>
+
+            <aside class="resumen">
+              <span class="resumen-title">Resumen</span>
+              <ul>
+                <li>
+                  <span>Servicio</span>
+                  <strong>{{ servicioSeleccionado()?.nombre }}</strong>
+                </li>
+                <li>
+                  <span>Profesional</span>
+                  <strong>
+                    {{ profesionalSeleccionado()?.nombre }} {{ profesionalSeleccionado()?.apellido }}
+                  </strong>
+                </li>
+                <li>
+                  <span>Fecha</span>
+                  <strong>{{ fechaTextoResumen() }}</strong>
+                </li>
+                <li>
+                  <span>Hora</span>
+                  <strong>{{ horaSeleccionada() }}</strong>
+                </li>
+                <li class="total">
+                  <span>Total</span>
+                  <strong>{{ servicioSeleccionado() ? formatPrecio(servicioSeleccionado()!.precio) : '' }}</strong>
+                </li>
+              </ul>
+            </aside>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn btn-ghost" matStepperPrevious [disabled]="enviando()">Atrás</button>
+            <button
+              type="button"
+              class="btn btn-gold"
+              (click)="confirmar()"
+              [disabled]="datosForm.invalid || enviando()"
+            >
+              @if (enviando()) {
+                <mat-spinner diameter="20" />
+                Confirmando…
+              } @else {
+                Confirmar turno
+              }
+            </button>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    }
+  </div>
+</main>
+
+<app-footer />

@@ -1,0 +1,27 @@
+<header class="site-header">
+  <div class="container bar">
+    <a routerLink="/" class="logo" (click)="cerrarMenu()" aria-label="Lumière, inicio">
+      <span class="logo-mark">L</span>
+      <span class="logo-text">Lumière</span>
+    </a>
+
+    <button
+      class="burger"
+      type="button"
+      [class.is-open]="menuAbierto()"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuAbierto()"
+      aria-label="Abrir menú"
+    >
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav" [class.open]="menuAbierto()">
+      <a routerLink="/" fragment="servicios" (click)="cerrarMenu()">Servicios</a>
+      <a routerLink="/" fragment="profesionales" (click)="cerrarMenu()">Profesionales</a>
+      <a routerLink="/" fragment="contacto" (click)="cerrarMenu()">Contacto</a>
+      <a routerLink="/mis-turnos" (click)="cerrarMenu()" class="nav-link-soft">Mis turnos</a>
+      <a routerLink="/reservar" (click)="cerrarMenu()" class="btn btn-gold nav-cta">Reservar turno</a>
+    </nav>
+  </div>
+</header>

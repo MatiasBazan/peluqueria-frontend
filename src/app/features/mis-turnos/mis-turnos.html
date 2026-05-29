@@ -1,0 +1,108 @@
+<app-header />
+
+<main class="mis-turnos-main">
+  <div class="container narrow">
+    <header class="page-head">
+      <span class="eyebrow">Mis turnos</span>
+      <h1 class="page-title">Consultá tus reservas</h1>
+      <p class="page-lead">
+        Ingresá el teléfono con el que reservaste para ver tus turnos próximos.
+      </p>
+    </header>
+
+    <form class="buscar card" [formGroup]="buscarForm" (ngSubmit)="buscar()">
+      <mat-form-field appearance="outline" class="buscar-field">
+        <mat-label>Teléfono</mat-label>
+        <input
+          matInput
+          formControlName="telefono"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="+54 11 5555-5555"
+        />
+        @if (buscarForm.controls.telefono.hasError('required') && buscarForm.controls.telefono.touched) {
+          <mat-error>Ingresá tu teléfono.</mat-error>
+        }
+      </mat-form-field>
+      <button type="submit" class="btn btn-primary" [disabled]="cargando()">
+        @if (cargando()) {
+          <mat-spinner diameter="20" />
+          Buscando…
+        } @else {
+          Buscar turnos
+        }
+      </button>
+    </form>
+
+    @if (buscado() && !cargando()) {
+      @if (turnos().length === 0) {
+        <div class="estado-vacio card">
+          <h2>No encontramos turnos futuros</h2>
+          <p>Verificá el número o reservá uno nuevo.</p>
+          <a routerLink="/reservar" class="btn btn-gold">Reservar turno</a>
+        </div>
+      } @else {
+        <ul class="lista">
+          @for (turno of turnos(); track turno.id) {
+            <li class="turno card">
+              <div class="turno-fecha">
+                <span class="dia">{{ formatFechaLarga(turno.fechaHora) }}</span>
+                <span class="hora">{{ formatHora(turno.fechaHora) }}</span>
+              </div>
+
+              <div class="turno-info">
+                <h3>{{ turno.servicioNombre }}</h3>
+                <p>
+                  con {{ turno.profesionalNombre }} ·
+                  {{ formatDuracion(turno.duracionMinutos) }}
+                </p>
+                <app-estado-chip [estado]="turno.estado" />
+              </div>
+
+              <div class="turno-accion">
+                @if (esCancelable(turno.estado)) {
+                  @if (cancelandoId() === turno.id) {
+                    <div class="cancelar-box">
+                      <mat-form-field appearance="outline" class="codigo-field" subscriptSizing="dynamic">
+                        <mat-label>Código de cancelación</mat-label>
+                        <input matInput [formControl]="codigoControl" />
+                      </mat-form-field>
+                      <div class="cancelar-btns">
+                        <button
+                          type="button"
+                          class="btn btn-ghost btn-sm"
+                          (click)="cerrarCancelacion()"
+                          [disabled]="procesando()"
+                        >
+                          Volver
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-sm"
+                          (click)="confirmarCancelacion(turno)"
+                          [disabled]="procesando()"
+                        >
+                          @if (procesando()) {
+                            <mat-spinner diameter="18" />
+                          } @else {
+                            Confirmar
+                          }
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <button type="button" class="btn btn-ghost btn-sm" (click)="abrirCancelacion(turno)">
+                      Cancelar turno
+                    </button>
+                  }
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+</main>
+
+<app-footer />

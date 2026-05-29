@@ -1,0 +1,55 @@
+<header class="page-head">
+  <div>
+    <h1 class="page-title">Servicios</h1>
+    <p class="page-sub">{{ servicios().length }} servicio(s) en el catálogo.</p>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="nuevo()">
+    <span class="material-icons">add</span>
+    Nuevo servicio
+  </button>
+</header>
+
+@if (cargando()) {
+  <div class="cargando"><mat-spinner diameter="40" /></div>
+} @else if (error()) {
+  <app-estado-error mensaje="No pudimos cargar los servicios." (reintentar)="cargar()" />
+} @else if (servicios().length === 0) {
+  <div class="vacio card">
+    <span class="material-icons">content_cut</span>
+    <p>Todavía no hay servicios. Creá el primero.</p>
+  </div>
+} @else {
+  <div class="tabla card">
+    <div class="thead">
+      <span>Servicio</span>
+      <span>Duración</span>
+      <span>Precio</span>
+      <span>Estado</span>
+      <span class="col-acc"></span>
+    </div>
+
+    @for (s of servicios(); track s.id) {
+      <div class="trow" [class.procesando]="procesandoId() === s.id" [class.inactivo]="!s.activo">
+        <div class="cell" data-label="Servicio">
+          <strong>{{ s.nombre }}</strong>
+          @if (s.descripcion) {
+            <span class="sub">{{ s.descripcion }}</span>
+          }
+        </div>
+        <div class="cell" data-label="Duración">{{ formatDuracion(s.duracionMinutos) }}</div>
+        <div class="cell precio" data-label="Precio">{{ formatPrecio(s.precio) }}</div>
+        <div class="cell" data-label="Estado">
+          <span class="badge" [class.on]="s.activo">{{ s.activo ? 'Activo' : 'Inactivo' }}</span>
+        </div>
+        <div class="cell col-acc">
+          <button type="button" class="icon-btn" (click)="editar(s)" aria-label="Editar">
+            <span class="material-icons">edit</span>
+          </button>
+          <button type="button" class="icon-btn danger" (click)="eliminar(s)" aria-label="Dar de baja">
+            <span class="material-icons">delete_outline</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

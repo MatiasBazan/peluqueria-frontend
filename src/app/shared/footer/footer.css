@@ -1,0 +1,104 @@
+:host {
+  display: block;
+}
+
+.site-footer {
+  background: var(--ink);
+  color: var(--cream);
+  padding-top: 72px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 56px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+}
+
+.logo-text {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.tagline {
+  color: color-mix(in srgb, var(--cream) 65%, transparent);
+  max-width: 36ch;
+  line-height: 1.7;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.links-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.links a,
+.links p {
+  color: color-mix(in srgb, var(--cream) 72%, transparent);
+  font-size: 0.95rem;
+  transition: color 0.2s var(--ease);
+}
+
+.links a:hover {
+  color: var(--cream);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 24px;
+  border-top: 1px solid color-mix(in srgb, var(--cream) 14%, transparent);
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--cream) 55%, transparent);
+}
+
+.admin-link {
+  color: color-mix(in srgb, var(--cream) 55%, transparent);
+  transition: color 0.2s var(--ease);
+}
+
+.admin-link:hover {
+  color: var(--gold);
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}

@@ -1,0 +1,60 @@
+<div class="login-page">
+  <div class="login-card card">
+    <a routerLink="/" class="brand">
+      <span class="brand-mark">L</span>
+      <span class="brand-text">Lumière</span>
+    </a>
+
+    <h1>Panel de administración</h1>
+    <p class="subtitle">Ingresá con tus credenciales para gestionar la agenda.</p>
+
+    <form [formGroup]="form" (ngSubmit)="ingresar()">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="username" />
+        @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+          <mat-error>Ingresá tu email.</mat-error>
+        } @else if (form.controls.email.hasError('email')) {
+          <mat-error>Email inválido.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="ocultarPass() ? 'password' : 'text'"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matIconSuffix
+          type="button"
+          (click)="ocultarPass.set(!ocultarPass())"
+          [attr.aria-label]="ocultarPass() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <span class="material-icons">{{ ocultarPass() ? 'visibility' : 'visibility_off' }}</span>
+        </button>
+        @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+          <mat-error>Ingresá tu contraseña.</mat-error>
+        }
+      </mat-form-field>
+
+      <button type="submit" class="btn btn-primary login-btn" [disabled]="enviando()">
+        @if (enviando()) {
+          <mat-spinner diameter="20" />
+          Ingresando…
+        } @else {
+          Ingresar
+        }
+      </button>
+    </form>
+
+    <p class="demo-hint">
+      <strong>Demo:</strong> admin&#64;peluqueria.com · admin1234
+    </p>
+
+    <a routerLink="/" class="volver">← Volver al sitio</a>
+  </div>
+</div>

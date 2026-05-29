@@ -1,0 +1,25 @@
+// Tema base de Angular Material (Material 3).
+// Genera la estructura de tokens; el color de marca (dorado) y la tipografía
+// se afinan vía variables --mat-sys-* en styles.css para mantener el control
+// visual en un solo lugar.
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$orange-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: 'Inter',
+        brand-family: 'Playfair Display',
+        bold-weight: 600,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+}

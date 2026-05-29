@@ -1,0 +1,80 @@
+<app-header />
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <span class="eyebrow hero-eyebrow">Estudio de peluquería · Buenos Aires</span>
+      <h1 class="hero-title">
+        Tu estilo,<br />
+        <em>cuidado con luz propia.</em>
+      </h1>
+      <p class="hero-lead">
+        Cortes, color y peinados de autor en un espacio pensado para que cada visita se sienta
+        un ritual. Reservá online en segundos.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/reservar" class="btn btn-gold">Reservá tu turno</a>
+        <a routerLink="/" fragment="servicios" class="btn btn-ghost btn-ghost-light">
+          Ver servicios
+        </a>
+      </div>
+    </div>
+    <a routerLink="/" fragment="servicios" class="hero-scroll" aria-label="Bajar a servicios">
+      <span></span>
+    </a>
+  </section>
+
+  <app-servicios-section [servicios]="servicios()" [cargando]="cargandoServicios()" />
+
+  <app-profesionales-section
+    [profesionales]="profesionales()"
+    [cargando]="cargandoProfesionales()"
+  />
+
+  <!-- Contacto / CTA -->
+  <section id="contacto" class="section contacto">
+    <div class="container contacto-grid">
+      <div class="contacto-info">
+        <span class="eyebrow">Visitanos</span>
+        <h2 class="section-title">Te esperamos en el estudio</h2>
+        <p class="section-lead">
+          Un café de bienvenida, música suave y el mejor equipo para vos. Reservá tu lugar.
+        </p>
+
+        <ul class="datos">
+          <li>
+            <span class="dato-label">Dirección</span>
+            <span class="dato-valor">Av. Siempreviva 742, Buenos Aires</span>
+          </li>
+          <li>
+            <span class="dato-label">Horarios</span>
+            <span class="dato-valor">Martes a sábado · 9:00 a 20:00 h</span>
+          </li>
+          <li>
+            <span class="dato-label">Teléfono</span>
+            <span class="dato-valor">+54 11 0000-0000</span>
+          </li>
+        </ul>
+
+        <a routerLink="/reservar" class="btn btn-primary">Reservá tu turno</a>
+      </div>
+
+      <div class="mapa">
+        <iframe
+          class="mapa-iframe"
+          [src]="mapaUrl"
+          title="Mapa de ubicación de Lumière en Buenos Aires"
+          width="100%"
+          height="100%"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer />

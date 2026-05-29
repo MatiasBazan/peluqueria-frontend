@@ -1,0 +1,72 @@
+<header class="page-head">
+  <div>
+    <h1 class="page-title">Profesionales</h1>
+    <p class="page-sub">{{ profesionales().length }} profesional(es) en el equipo.</p>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="nuevo()">
+    <span class="material-icons">add</span>
+    Nuevo profesional
+  </button>
+</header>
+
+@if (cargando()) {
+  <div class="cargando"><mat-spinner diameter="40" /></div>
+} @else if (error()) {
+  <app-estado-error mensaje="No pudimos cargar los profesionales." (reintentar)="cargar()" />
+} @else if (profesionales().length === 0) {
+  <div class="vacio card">
+    <span class="material-icons">group</span>
+    <p>Todavía no hay profesionales. Sumá al primero.</p>
+  </div>
+} @else {
+  <div class="tabla card">
+    <div class="thead">
+      <span>Profesional</span>
+      <span>Servicios</span>
+      <span>Estado</span>
+      <span class="col-acc"></span>
+    </div>
+
+    @for (p of profesionales(); track p.id) {
+      <div class="trow" [class.procesando]="procesandoId() === p.id" [class.inactivo]="!p.activo">
+        <div class="cell prof" data-label="Profesional">
+          <img [src]="fotoDe(p)" [alt]="p.nombre" loading="lazy" />
+          <div>
+            <strong>{{ p.nombre }} {{ p.apellido }}</strong>
+            @if (p.telefono) {
+              <span class="sub">{{ p.telefono }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="cell" data-label="Servicios">
+          @if (p.servicios.length > 0) {
+            <div class="chips">
+              @for (s of p.servicios; track s.id) {
+                <span class="chip">{{ s.nombre }}</span>
+              }
+            </div>
+          } @else {
+            <span class="sub">Sin servicios</span>
+          }
+        </div>
+
+        <div class="cell" data-label="Estado">
+          <span class="badge" [class.on]="p.activo">{{ p.activo ? 'Activo' : 'Inactivo' }}</span>
+        </div>
+
+        <div class="cell col-acc">
+          <button type="button" class="icon-btn" (click)="gestionarHorarios(p)" aria-label="Horarios">
+            <span class="material-icons">schedule</span>
+          </button>
+          <button type="button" class="icon-btn" (click)="editar(p)" aria-label="Editar">
+            <span class="material-icons">edit</span>
+          </button>
+          <button type="button" class="icon-btn danger" (click)="eliminar(p)" aria-label="Dar de baja">
+            <span class="material-icons">delete_outline</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

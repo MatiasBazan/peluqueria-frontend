@@ -1,0 +1,108 @@
+<header class="page-head">
+  <div>
+    <h1 class="page-title">Agenda de turnos</h1>
+    <p class="page-sub">{{ turnos().length }} turno(s) según los filtros activos.</p>
+  </div>
+</header>
+
+<!-- Filtros -->
+<form class="filtros card" [formGroup]="filtros">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Profesional</mat-label>
+    <mat-select formControlName="profesionalId">
+      <mat-option [value]="null">Todos</mat-option>
+      @for (p of profesionales(); track p.id) {
+        <mat-option [value]="p.id">{{ p.nombre }} {{ p.apellido }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Fecha</mat-label>
+    <input matInput readonly [matDatepicker]="picker" formControlName="fecha" (click)="picker.open()" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Estado</mat-label>
+    <mat-select formControlName="estado">
+      <mat-option [value]="null">Todos</mat-option>
+      @for (e of estados; track e) {
+        <mat-option [value]="e">{{ estadoEtiqueta[e] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (hayFiltros()) {
+    <button type="button" class="btn btn-ghost btn-sm" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+  }
+</form>
+
+<!-- Tabla -->
+@if (cargando()) {
+  <div class="cargando">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error()) {
+  <app-estado-error mensaje="No pudimos cargar los turnos." (reintentar)="cargar()" />
+} @else if (turnos().length === 0) {
+  <div class="vacio card">
+    <span class="material-icons">event_busy</span>
+    <p>No hay turnos para mostrar.</p>
+  </div>
+} @else {
+  <div class="tabla card">
+    <div class="thead">
+      <span>Fecha y hora</span>
+      <span>Cliente</span>
+      <span>Servicio</span>
+      <span>Profesional</span>
+      <span>Estado</span>
+      <span class="col-acc"></span>
+    </div>
+
+    @for (turno of turnos(); track turno.id) {
+      <div class="trow" [class.procesando]="procesandoId() === turno.id">
+        <div class="cell fecha" data-label="Fecha">
+          <strong>{{ formatFechaCorta(turno.fechaHora) }}</strong>
+          <span class="hora">{{ formatHora(turno.fechaHora) }}</span>
+        </div>
+        <div class="cell" data-label="Cliente">
+          <strong>{{ turno.clienteNombre }}</strong>
+          <span class="sub">{{ turno.clienteTelefono }}</span>
+        </div>
+        <div class="cell" data-label="Servicio">{{ turno.servicioNombre }}</div>
+        <div class="cell" data-label="Profesional">{{ turno.profesionalNombre }}</div>
+        <div class="cell" data-label="Estado">
+          <app-estado-chip [estado]="turno.estado" />
+        </div>
+        <div class="cell col-acc">
+          @if (accionesDe(turno.estado).length > 0) {
+            <button
+              class="acc-btn"
+              type="button"
+              [matMenuTriggerFor]="menu"
+              [disabled]="procesandoId() === turno.id"
+              aria-label="Acciones"
+            >
+              <span class="material-icons">more_vert</span>
+            </button>
+            <mat-menu #menu="matMenu">
+              @for (accion of accionesDe(turno.estado); track accion.estado) {
+                <button mat-menu-item type="button" (click)="cambiarEstado(turno, accion.estado)">
+                  <span class="material-icons menu-icon">{{ accion.icono }}</span>
+                  {{ accion.etiqueta }}
+                </button>
+              }
+            </mat-menu>
+          } @else {
+            <span class="acc-final" title="Estado final · sin acciones">—</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

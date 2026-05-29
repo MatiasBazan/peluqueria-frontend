@@ -1,0 +1,146 @@
+:host {
+  display: block;
+  background: var(--cream-100);
+}
+
+.head {
+  max-width: 640px;
+  margin-bottom: 56px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.prof {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.prof:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.foto-wrap {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--cream-200);
+}
+
+.foto-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+
+.prof:hover .foto-wrap img {
+  transform: scale(1.05);
+}
+
+.prof-body {
+  padding: 24px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.prof-nombre {
+  font-size: 1.35rem;
+}
+
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-start evita que los chips se estiren verticalmente cuando el UL crece
+     (flex: 1) y hay pocos servicios en una sola fila. */
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 8px;
+  flex: 1;
+}
+
+.chips li {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  background: var(--cream);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.prof-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  transition: gap 0.25s var(--ease);
+}
+
+.prof:hover .prof-cta {
+  gap: 11px;
+}
+
+.vacio {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* --- Skeletons --- */
+.skeleton {
+  padding: 0 0 28px;
+  pointer-events: none;
+}
+
+.sk-foto {
+  aspect-ratio: 4 / 3;
+  background: var(--cream-200);
+}
+
+.sk-line {
+  height: 14px;
+  margin: 16px 26px 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--cream-100) 25%, var(--cream-200) 37%, var(--cream-100) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.w-50 {
+  width: 50%;
+}
+.w-80 {
+  width: 80%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foto-wrap img,
+  .sk-line {
+    transition: none;
+    animation: none;
+  }
+}

@@ -1,0 +1,54 @@
+<div class="admin-shell" [class.menu-abierto]="menuAbierto()">
+  <!-- Barra superior (mobile) -->
+  <header class="topbar">
+    <button class="burger" type="button" (click)="toggleMenu()" aria-label="Abrir menú">
+      <span class="material-icons">{{ menuAbierto() ? 'close' : 'menu' }}</span>
+    </button>
+    <span class="topbar-title">Lumière · Admin</span>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">L</span>
+      <span class="brand-text">Lumière</span>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="agenda" routerLinkActive="active" (click)="cerrarMenu()">
+        <span class="material-icons">event_note</span>
+        Agenda
+      </a>
+      <a routerLink="servicios" routerLinkActive="active" (click)="cerrarMenu()">
+        <span class="material-icons">content_cut</span>
+        Servicios
+      </a>
+      <a routerLink="profesionales" routerLinkActive="active" (click)="cerrarMenu()">
+        <span class="material-icons">group</span>
+        Profesionales
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="usuario">
+        <span class="material-icons">account_circle</span>
+        <div>
+          <span class="usuario-rol">Administrador</span>
+          <span class="usuario-nombre">{{ nombre() }}</span>
+        </div>
+      </div>
+      <button type="button" class="logout" (click)="logout()">
+        <span class="material-icons">logout</span>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay mobile -->
+  <div class="overlay" (click)="cerrarMenu()"></div>
+
+  <!-- Contenido -->
+  <main class="contenido">
+    <router-outlet />
+  </main>
+</div>
