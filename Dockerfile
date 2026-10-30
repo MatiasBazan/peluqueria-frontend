@@ -1,5 +1,5 @@
 # Etapa 1: Construcción
-FROM node:22.23.4-alpine AS build
+FROM node:24.22.2-alpine AS build
 WORKDIR /app
 
 # Instalar pnpm globalmente
